@@ -1,0 +1,214 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global hardened helper functions
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'abu.anhar.moath@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // Entity Validation Helpers
+    function isValidUser(data) {
+      return data.keys().hasAll(['id', 'name', 'phone', 'role', 'customerType', 'isVerified', 'createdAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+        data.phone is string && data.phone.size() <= 30 &&
+        data.role in ['super_admin', 'admin', 'inventory_manager', 'orders_manager', 'delivery_manager', 'customer'] &&
+        data.customerType in ['retail', 'wholesale', 'commercial'] &&
+        data.isVerified is bool &&
+        data.createdAt is string && data.createdAt.size() <= 50;
+    }
+
+    function isValidProduct(data) {
+      return data.keys().hasAll(['id', 'sku', 'nameAr', 'categoryId', 'price', 'stockQuantity', 'unit', 'isActive']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.sku is string && data.sku.size() <= 64 &&
+        data.nameAr is string && data.nameAr.size() > 0 && data.nameAr.size() <= 200 &&
+        data.categoryId is string && data.categoryId.size() <= 64 &&
+        data.price is number && data.price >= 0 &&
+        data.stockQuantity is number &&
+        data.unit is string && data.unit.size() <= 50 &&
+        data.isActive is bool;
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll(['id', 'orderNumber', 'userId', 'userName', 'userPhone', 'subtotal', 'totalAmount', 'status', 'paymentMethod', 'deliveryMethod', 'createdAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.orderNumber is string && data.orderNumber.size() <= 32 &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.userName is string && data.userName.size() > 0 && data.userName.size() <= 100 &&
+        data.userPhone is string && data.userPhone.size() <= 30 &&
+        data.subtotal is number && data.subtotal >= 0 &&
+        data.totalAmount is number && data.totalAmount >= 0 &&
+        data.status in ['new', 'pending', 'confirmed', 'processing', 'out_for_delivery', 'delivered', 'cancelled'] &&
+        data.paymentMethod in ['cod', 'bank_transfer', 'card', 'apple_pay', 'stc_pay', 'kuraimi', 'e_wallet'] &&
+        data.deliveryMethod in ['home_delivery', 'store_pickup', 'express_delivery'] &&
+        data.createdAt is string && data.createdAt.size() <= 50;
+    }
+
+    function isValidReview(data) {
+      return data.keys().hasAll(['id', 'productId', 'productName', 'userId', 'userName', 'rating', 'comment', 'createdAt', 'isApproved']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.productId is string && data.productId.size() <= 128 &&
+        data.productName is string && data.productName.size() <= 200 &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.userName is string && data.userName.size() <= 100 &&
+        data.rating is number && data.rating >= 1 && data.rating <= 5 &&
+        data.comment is string && data.comment.size() <= 1000 &&
+        data.createdAt is string && data.createdAt.size() <= 50 &&
+        data.isApproved is bool;
+    }
+
+    function isValidWholesaleRequest(data) {
+      return data.keys().hasAll(['id', 'facilityName', 'contactName', 'contactPhone', 'activityType', 'city', 'createdAt', 'status']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.facilityName is string && data.facilityName.size() <= 150 &&
+        data.contactName is string && data.contactName.size() <= 100 &&
+        data.contactPhone is string && data.contactPhone.size() <= 30 &&
+        data.activityType is string && data.activityType.size() <= 100 &&
+        data.city is string && data.city.size() <= 100 &&
+        data.createdAt is string && data.createdAt.size() <= 50 &&
+        data.status in ['pending', 'contacted', 'approved', 'rejected'];
+    }
+
+    function isValidContactMessage(data) {
+      return data.keys().hasAll(['id', 'name', 'phone', 'subject', 'message', 'createdAt', 'status']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.name is string && data.name.size() <= 100 &&
+        data.phone is string && data.phone.size() <= 30 &&
+        data.subject is string && data.subject.size() <= 200 &&
+        data.message is string && data.message.size() <= 2000 &&
+        data.createdAt is string && data.createdAt.size() <= 50 &&
+        data.status in ['unread', 'read', 'responded'];
+    }
+
+    function isValidSupplier(data) {
+      return data.keys().hasAll(['id', 'name', 'companyName', 'phone', 'city', 'address', 'paymentTerms', 'balance', 'totalPurchases', 'totalPaid', 'isActive', 'createdAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.name is string && data.name.size() <= 100 &&
+        data.companyName is string && data.companyName.size() <= 150 &&
+        data.phone is string && data.phone.size() <= 30 &&
+        data.city is string && data.city.size() <= 100 &&
+        data.balance is number &&
+        data.isActive is bool;
+    }
+
+    function isValidAccountingTransaction(data) {
+      return data.keys().hasAll(['id', 'entryNumber', 'type', 'date', 'amount', 'accountFrom', 'accountTo', 'category', 'description', 'paymentMethod', 'status', 'createdAt', 'createdBy']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.entryNumber is string && data.entryNumber.size() <= 64 &&
+        data.amount is number &&
+        data.status in ['confirmed', 'draft', 'cancelled'];
+    }
+
+    function isValidPurchaseInvoice(data) {
+      return data.keys().hasAll(['id', 'invoiceNumber', 'supplierId', 'supplierName', 'date', 'subtotal', 'totalAmount', 'paidAmount', 'remainingAmount', 'paymentStatus', 'paymentMethod', 'status', 'createdAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.invoiceNumber is string && data.invoiceNumber.size() <= 64 &&
+        data.totalAmount is number;
+    }
+
+    // Rules for Admins bootstrap collection
+    match /admins/{adminId} {
+      allow read, write: if true;
+    }
+
+    // Rules for User Profiles
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    // Rules for Products
+    match /products/{productId} {
+      allow read, write: if true;
+    }
+
+    // Rules for Categories
+    match /categories/{categoryId} {
+      allow read, write: if true;
+    }
+
+    // Rules for Orders
+    match /orders/{orderId} {
+      allow read, write: if true;
+    }
+
+    // Rules for Coupons
+    match /coupons/{couponId} {
+      allow read, write: if true;
+    }
+
+    // Rules for Reviews
+    match /reviews/{reviewId} {
+      allow read, write: if true;
+    }
+
+    // Rules for Wholesale Requests
+    match /wholesale_requests/{requestId} {
+      allow read, write: if true;
+    }
+
+    // Rules for Contact Messages
+    match /contact_messages/{messageId} {
+      allow read, write: if true;
+    }
+
+    // Rules for Suppliers
+    match /suppliers/{supplierId} {
+      allow read, write: if true;
+    }
+
+    // Rules for Accounting Transactions
+    match /accounting_transactions/{transactionId} {
+      allow read, write: if true;
+    }
+
+    // Rules for Purchase Invoices
+    match /purchase_invoices/{invoiceId} {
+      allow read, write: if true;
+    }
+
+    // Rules for Financial Accounts
+    match /financial_accounts/{accountId} {
+      allow read, write: if true;
+    }
+
+    // Rules for Notifications
+    match /notifications/{notificationId} {
+      allow read, write: if true;
+    }
+
+    // Test connection doc for client readiness
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}

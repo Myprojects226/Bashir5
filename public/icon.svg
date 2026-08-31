@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="50%" stop-color="#0369a1" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded Background for App Icon -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)" />
+  
+  <!-- Outer Glow Soft Ring -->
+  <circle cx="256" cy="256" r="220" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="4" />
+  
+  <!-- Dispenser Cap (Green) -->
+  <rect x="226" y="70" width="60" height="30" rx="8" fill="url(#greenGrad)" />
+  <path d="M210 100 C210 95 218 90 226 90 H286 C294 90 302 95 302 100 V110 H210 V100 Z" fill="url(#greenGrad)" />
+
+  <!-- ABR Detergent Bottle Body Contour (White / Soft Light) -->
+  <path d="M256 120 C190 120 145 170 145 235 C145 305 185 390 256 410 C327 390 367 305 367 235 C367 170 322 120 256 120 Z" fill="#ffffff" />
+
+  <!-- Green 'R' Wing on Right -->
+  <path d="M330 160 C365 160 395 185 395 230 C395 265 370 290 338 300 L395 390 C400 398 390 408 378 404 L330 365 C320 358 308 365 308 378 V398 C308 405 300 408 290 404 C260 390 240 370 225 350" stroke="url(#greenGrad)" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+
+  <!-- Blue 'A' Dynamic Loop on Left -->
+  <path d="M105 390 C125 330 160 220 210 150 C230 115 268 115 290 150 C315 190 332 250 338 300" stroke="url(#blueGrad)" stroke-width="40" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+
+  <!-- Blue 'B' Central Swirl Loop -->
+  <path d="M210 200 C185 235 180 300 220 350 C250 390 295 380 318 345 C340 305 330 240 295 210 C265 185 235 180 210 200 Z" stroke="url(#blueGrad)" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+
+  <!-- Central Water Droplet (Clean Freshness) -->
+  <path d="M256 250 C256 250 232 280 232 300 C232 314 243 324 256 324 C269 324 280 314 280 300 C280 280 256 250 256 250 Z" fill="#0ea5e9" />
+  
+  <!-- Droplet Highlight -->
+  <path d="M248 285 C244 292 242 298 246 306" stroke="#ffffff" stroke-width="4" stroke-linecap="round" fill="none" />
+
+  <!-- Bubbles -->
+  <circle cx="275" cy="255" r="8" fill="url(#greenGrad)" />
+  <circle cx="290" cy="272" r="6" fill="#38bdf8" />
+  <circle cx="230" cy="270" r="5" fill="#38bdf8" />
+</svg>

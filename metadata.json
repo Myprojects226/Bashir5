@@ -1,0 +1,10 @@
+{
+  "name": "Remix Al-Bishara Store",
+  "description": "Shop high-quality plastics, detergents, and household essentials through this professional e-commerce platform with fast local delivery services.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

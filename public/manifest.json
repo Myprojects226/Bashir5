@@ -1,0 +1,62 @@
+{
+  "name": "متجر البشارة للبلاستيك والمنظفات - تعز",
+  "short_name": "البشارة تعز",
+  "description": "تطبيق متجر البشارة لتوريدات البلاستيك والمنظفات والورقيات ومستلزمات المطاعم بالجملة والتجزئة - تعز بيرباشا",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#1e3a8a",
+  "lang": "ar",
+  "dir": "rtl",
+  "scope": "/",
+  "categories": [
+    "shopping",
+    "business",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "سلة المشتريات",
+      "short_name": "السلة",
+      "description": "عرض المنتجات والكراتين المضافة للسلة",
+      "url": "/?view=cart",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "بوابة أسعار الجملة",
+      "short_name": "الجملة",
+      "description": "عروض وأسعار كراتين الجملة والمطاعم",
+      "url": "/?view=wholesale_portal",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "سجل طلباتي",
+      "short_name": "طلباتي",
+      "description": "تتبع حالة شحناتك الحالية والسابقة",
+      "url": "/?view=my_orders",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
